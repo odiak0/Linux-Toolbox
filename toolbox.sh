@@ -26,7 +26,7 @@ toolbox_menu() {
             "1" "System Update"
             "2" "Bspwm desktop setup"
             "3" "Hyprland desktop setup (Arch Linux only)"
-            "4" "Bash Prompt Setup"
+            "4" "Reboot"
             "5" "Exit"
         )
         choice=$(whiptail --title "Linux Toolbox" --menu "Choose an option:" 15 60 5 "${menu_options[@]}" 3>&1 1>&2 2>&3)
@@ -80,7 +80,7 @@ toolbox_menu() {
                 bash <(curl -L https://github.com/odiak0/hyprland-config/raw/main/install.sh)
                 ;;
             4)
-                whiptail --title "Linux Toolbox" --msgbox "Work in progress" 8 60
+                sudo reboot
                 ;;
             5)
                 whiptail --title "Linux Toolbox" --msgbox "Exiting Toolbox." 8 60
