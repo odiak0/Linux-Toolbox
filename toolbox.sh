@@ -70,7 +70,7 @@ toolbox_menu() {
                 esac
 
                 if [ "$PACKAGER" != "unknown" ]; then
-                    whiptail --title "System Update" --msgbox "System update completed." 8 60
+                    whiptail --title "Linux Toolbox" --msgbox "System update completed." 8 60
                 fi
                 ;;
             2)
@@ -80,14 +80,14 @@ toolbox_menu() {
                 bash <(curl -L https://github.com/odiak0/hyprland-config/raw/main/install.sh)
                 ;;
             4)
-                print_message Work in progress "$RED"
+                whiptail --title "Linux Toolbox" --msgbox "Work in progress" 8 60
                 ;;
             5)
-                whiptail --title "Toolbox" --msgbox "Exiting Toolbox." 8 60
+                whiptail --title "Linux Toolbox" --msgbox "Exiting Toolbox." 8 60
                 exit 0
                 ;;
             *)
-                whiptail --title "Toolbox" --msgbox "Invalid selection. Please try again." 8 60
+                whiptail --title "Linux Toolbox" --msgbox "Invalid selection. Please try again." 8 60
                 ;;
         esac
     done
