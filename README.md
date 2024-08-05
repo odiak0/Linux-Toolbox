@@ -1,3 +1,3 @@
-<p align="center"> # Linux Toolbox </p>
+# Linux Toolbox
 
 ## 💡 Usage
