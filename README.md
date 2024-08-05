@@ -4,5 +4,5 @@
 
 Open your terminal and paste this command:
 ```bash
-WORK IN PROGRESS
+bash <(curl -L https://github.com/odiak0/linux-toolbox/raw/main/toolbox.sh)
 ```
