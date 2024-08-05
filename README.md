@@ -1,7 +1,3 @@
 # Linux Toolbox
 
-
-
-
-
 ## 💡 Usage
