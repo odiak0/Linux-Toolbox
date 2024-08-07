@@ -2,9 +2,15 @@
 
 # Colors for better readability
 GREEN="\e[32m"
-RED="\e[31m"
 YELLOW="\e[33m"
 ENDCOLOR="\e[0m"
+
+# Function to print colored messages
+print_message() {
+    local message="$1"
+    local color="$2"
+    echo -e "${color}${message}${ENDCOLOR}"
+}
 
 # Function to setup linuxtoolbox
 setup_linuxtoolbox() {
@@ -110,7 +116,7 @@ check_and_install_whiptail() {
         elif command -v zypper &> /dev/null; then
             PACKAGER="zypper"
         else
-            print_message "Unable to detect a supported package manager. Please install whiptail manually." "$RED"
+            whiptail --title "Error" --msgbox "Unable to detect a supported package manager. Please install whiptail manually." 8 60
             exit 1
         fi
 
@@ -136,17 +142,10 @@ check_and_install_whiptail() {
         if command -v whiptail &> /dev/null; then
             print_message "whiptail has been successfully installed." "$GREEN"
         else
-            print_message "whiptail installation failed. Please install it manually." "$RED"
+            whiptail --title "Error" --msgbox "whiptail installation failed. Please install it manually." 8 60
             exit 1
         fi
     fi
-}
-
-# Add this function near the top of the script
-print_message() {
-    local message="$1"
-    local color="$2"
-    echo -e "${color}${message}${ENDCOLOR}"
 }
 
 # Main script
