@@ -32,10 +32,11 @@ toolbox_menu() {
             "1" "System Update"
             "2" "Bspwm desktop setup"
             "3" "Hyprland desktop setup (Arch Linux only)"
-            "4" "Reboot"
-            "5" "Exit"
+            "4" "Grub themes setup"
+            "5" "Reboot"
+            "6" "Exit"
         )
-        choice=$(whiptail --title "Linux Toolbox" --menu "Choose an option:" 15 60 5 "${menu_options[@]}" 3>&1 1>&2 2>&3)
+        choice=$(whiptail --title "Linux Toolbox" --menu "Choose an option:" 16 60 6 "${menu_options[@]}" 3>&1 1>&2 2>&3)
 
         case $choice in
             1)
@@ -86,9 +87,12 @@ toolbox_menu() {
                 bash <(curl -L https://github.com/odiak0/hyprland-config/raw/main/install.sh)
                 ;;
             4)
-                sudo reboot
+                bash <(curl -L https://github.com/odiak0/linux-toolbox/grub-themes/raw/main/install.sh)
                 ;;
             5)
+                sudo reboot
+                ;;
+            6)
                 whiptail --title "Linux Toolbox" --msgbox "Exiting Toolbox." 8 60
                 exit 0
                 ;;
