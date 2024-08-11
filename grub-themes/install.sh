@@ -158,12 +158,16 @@ config_grub() {
 update_grub() {
     print_message "Updating GRUB config..." "$GREEN"
 
-    if [[ -x "$(command -v update-grub)" ]]; then
-        sudo update-grub
-    elif [[ -x "$(command -v grub-mkconfig)" ]]; then
+    if [[ -x "$(command -v grub-mkconfig)" ]]; then
         sudo grub-mkconfig -o /boot/grub/grub.cfg
     elif [[ -x "$(command -v grub2-mkconfig)" ]]; then
-        sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+        if command -v dnf &> /dev/null; then
+            sudo grub2-mkconfig -o /etc/grub2-efi.cfg
+        else
+            sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+        fi
+    else
+        whiptail --title "Error" --msgbox "Unable to update GRUB config. Please update it manually." 8 78
     fi
 }
 
