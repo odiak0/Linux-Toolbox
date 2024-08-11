@@ -100,7 +100,7 @@ install_theme() {
     if [[ ! -d "${THEME_DIR}/${THEME_NAME}" ]]; then
         print_message "Installing ${THEME_NAME}" "$GREEN"
         if sudo mkdir -p "${THEME_DIR}/${THEME_NAME}"; then
-            if sudo cp -a "$LINUXTOOLBOXDIR/linux-toolbox/grub-themes/themes/${THEME_NAME}"/* "${THEME_DIR}/${THEME_NAME}/"; then
+            if sudo cp -r "$LINUXTOOLBOXDIR/linux-toolbox/grub-themes/themes/${THEME_NAME}"/* "${THEME_DIR}/${THEME_NAME}/"; then
                 # Set correct ownership
                 sudo chown -R root:root "${THEME_DIR}/${THEME_NAME}"
                 print_message "Theme ${THEME_NAME} installed successfully" "$GREEN"
