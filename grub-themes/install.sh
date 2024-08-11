@@ -162,7 +162,8 @@ update_grub() {
         sudo grub-mkconfig -o /boot/grub/grub.cfg
     elif [[ -x "$(command -v grub2-mkconfig)" ]]; then
         if command -v dnf &> /dev/null; then
-            sudo grub2-mkconfig -o /etc/grub2-efi.cfg
+            sudo sed -i '/GRUB_TERMINAL_OUTPUT="console"/d' /etc/default/grub
+            sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
         else
             sudo grub2-mkconfig -o /boot/grub2/grub.cfg
         fi
