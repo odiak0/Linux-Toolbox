@@ -80,7 +80,7 @@ select_theme() {
         "Cyberpunk" "" \
         "BIOS" "" \
         "CyberRe" "" \
-        "Minecraft Theme" "" 3>&1 1>&2 2>&3)
+        "Minecraft-Theme" "" 3>&1 1>&2 2>&3)
     if [ -z "$THEME_NAME" ]; then
         print_message "User cancelled theme selection. Exiting..." "$YELLOW"
         exit 0
