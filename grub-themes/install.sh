@@ -68,7 +68,7 @@ setup_linuxtoolbox() {
 }
 
 # Directory where GRUB themes are stored
-if [ -d "/boot/grub2/themes" ]; then
+if [ -d "/boot/grub2" ]; then
     THEME_DIR="/boot/grub2/themes"
 else
     THEME_DIR="/boot/grub/themes"
