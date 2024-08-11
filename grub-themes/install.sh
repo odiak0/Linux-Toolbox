@@ -74,19 +74,9 @@ else
     THEME_DIR="/boot/grub/themes"
 fi
 
-# Function to check for root access
-check_root() {
-    ROOT_UID=0
-    if [[ ! "${UID}" -eq "${ROOT_UID}" ]]; then
-        whiptail --title "Error" --msgbox "Run me as root.\nTry: sudo ./install.sh" 8 78
-        exit 1
-    fi
-}
-
 # Function to let user select a theme
 select_theme() {
-    THEME_NAME=$(whiptail --title "Select Theme" --menu "Choose theme:" 15 45 6 \
-        "Vimix" \
+    THEME_NAME=$(whiptail --title "Select Theme" --menu "Choose theme:" 15 45 5 \
         "Cyberpunk" \
         "BIOS" \
         "CyberRe" \
@@ -101,7 +91,7 @@ select_theme() {
 
 # Function to backup current GRUB configuration
 backup() {
-    cp -a /etc/default/grub "$LINUXTOOLBOXDIR/linux-toolbox/grub-themes"
+    sudo cp -a /etc/default/grub "$LINUXTOOLBOXDIR/linux-toolbox/grub-themes"
     whiptail --title "Backup" --msgbox "GRUB configuration has been backed up to:\n$LINUXTOOLBOXDIR/linux-toolbox/grub-themes/grub" 10 78
 }
 
@@ -109,8 +99,8 @@ backup() {
 install_theme() {
     if [[ ! -d "${THEME_DIR}/${THEME_NAME}" ]]; then
         print_message "Installing ${THEME_NAME}" "$GREEN"
-        if mkdir -p "${THEME_DIR}/${THEME_NAME}"; then
-            if cp -a ./themes/"${THEME_NAME}"/* "${THEME_DIR}/${THEME_NAME}"; then
+        if sudo mkdir -p "${THEME_DIR}/${THEME_NAME}"; then
+            if sudo cp -a "$LINUXTOOLBOXDIR/linux-toolbox/grub-themes/themes/${THEME_NAME}"/* "${THEME_DIR}/${THEME_NAME}"; then
                 print_message "Theme ${THEME_NAME} installed successfully" "$GREEN"
             else
                 whiptail --title "Error" --msgbox "Failed to copy theme files. Please check permissions and try again." 8 78
@@ -128,26 +118,38 @@ install_theme() {
 # Function to configure GRUB settings
 config_grub() {
     print_message "Enabling GRUB menu" "$GREEN"
-    sed -i '/GRUB_TIMEOUT_STYLE=/d' /etc/default/grub
-    echo 'GRUB_TIMEOUT_STYLE="menu"' >> /etc/default/grub
+    sudo sed -i '/GRUB_TIMEOUT_STYLE=/d' /etc/default/grub
+    echo 'GRUB_TIMEOUT_STYLE=menu' | sudo tee -a /etc/default/grub > /dev/null
 
     #--------------------------------------------------
 
     print_message "Setting GRUB timeout to 30 seconds" "$GREEN"
-    sed -i '/GRUB_TIMEOUT=/d' /etc/default/grub
-    echo 'GRUB_TIMEOUT="30"' >> /etc/default/grub
+    sudo sed -i '/GRUB_TIMEOUT=/d' /etc/default/grub
+    echo 'GRUB_TIMEOUT=30' | sudo tee -a /etc/default/grub > /dev/null
 
     #--------------------------------------------------
 
     print_message "Setting ${THEME_NAME} as default theme" "$GREEN"
-    sed -i '/GRUB_THEME=/d' /etc/default/grub
-    echo "GRUB_THEME=\"${THEME_DIR}/${THEME_NAME}/theme.txt\"" >> /etc/default/grub
+    sudo sed -i '/GRUB_THEME=/d' /etc/default/grub
+    echo GRUB_THEME=${THEME_DIR}/"${THEME_NAME}"/theme.txt | sudo tee -a /etc/default/grub > /dev/null
     
     #--------------------------------------------------
 
-    print_message "Setting GRUB graphics mode to auto" "$GREEN"
-    sed -i '/GRUB_GFXMODE=/d' /etc/default/grub
-    echo 'GRUB_GFXMODE="auto"' >> /etc/default/grub   
+    print_message "Setting GRUB graphics mode" "$GREEN"
+    RESOLUTION=$(whiptail --title "GRUB Graphics Mode" --menu "Choose a resolution:" 15 60 4 \
+        "auto" "Automatically detect best resolution" \
+        "1920x1080" "Full HD" \
+        "1280x720" "HD" \
+        "1024x768" "XGA" 3>&1 1>&2 2>&3)
+    
+    if [ -z "$RESOLUTION" ]; then
+        print_message "User cancelled resolution selection. Using 'auto'." "$YELLOW"
+        RESOLUTION="auto"
+    fi
+    
+    sudo sed -i '/GRUB_GFXMODE=/d' /etc/default/grub
+    echo "GRUB_GFXMODE=$RESOLUTION" | sudo tee -a /etc/default/grub > /dev/null
+    print_message "GRUB graphics mode set to $RESOLUTION" "$GREEN"
 }
 
 # Function to update GRUB configuration
@@ -155,17 +157,16 @@ update_grub() {
     print_message "Updating GRUB config..." "$GREEN"
 
     if [[ -x "$(command -v update-grub)" ]]; then
-        update-grub
+        sudo update-grub
     elif [[ -x "$(command -v grub-mkconfig)" ]]; then
-        grub-mkconfig -o /boot/grub/grub.cfg
+        sudo grub-mkconfig -o /boot/grub/grub.cfg
     elif [[ -x "$(command -v grub2-mkconfig)" ]]; then
-        grub2-mkconfig -o /boot/grub2/grub.cfg
+        sudo grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
 }
 
 # Main function
 main() {
-    check_root
     detect_package_manager
     setup_linuxtoolbox
     select_theme
