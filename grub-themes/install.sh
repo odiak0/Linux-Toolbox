@@ -77,10 +77,10 @@ fi
 # Function to let user select a theme
 select_theme() {
     THEME_NAME=$(whiptail --title "Select Theme" --menu "Choose theme:" 15 45 5 \
-        "Cyberpunk" \
-        "BIOS" \
-        "CyberRe" \
-        "Minecraft Theme" 3>&1 1>&2 2>&3)
+        "Cyberpunk" "" \
+        "BIOS" "" \
+        "CyberRe" "" \
+        "Minecraft Theme" "" 3>&1 1>&2 2>&3)
     if [ -z "$THEME_NAME" ]; then
         print_message "User cancelled theme selection. Exiting..." "$YELLOW"
         exit 0
