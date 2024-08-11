@@ -87,7 +87,7 @@ toolbox_menu() {
                 bash <(curl -L https://github.com/odiak0/hyprland-config/raw/main/install.sh)
                 ;;
             4)
-                bash <(curl -L https://github.com/odiak0/linux-toolbox/grub-themes/raw/main/install.sh)
+                bash <(curl -L https://github.com/odiak0/linux-toolbox/raw/main/grub-themes/install.sh)
                 ;;
             5)
                 sudo reboot
