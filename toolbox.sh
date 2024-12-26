@@ -81,19 +81,19 @@ toolbox_menu() {
                 fi
                 ;;
             2)
-                bash <(curl -L https://github.com/odiak0/bspwm-config/raw/main/install.sh)
+                bash <(curl -fsSL https://github.com/odiak0/bspwm-config/raw/main/install.sh)
                 ;;
             3)
-                bash <(curl -L https://github.com/odiak0/hyprland-config/raw/main/install.sh)
+                bash <(curl -fsSL https://github.com/odiak0/hyprland-config/raw/main/install.sh)
                 ;;
             4)
-                bash <(curl -L https://github.com/odiak0/linux-toolbox/raw/main/grub-themes/install.sh)
+                bash <(curl -fsSL https://github.com/odiak0/linux-toolbox/raw/main/grub-themes/install.sh)
                 ;;
             5)
                 sudo reboot
                 ;;
             6)
-                whiptail --title "Linux Toolbox" --msgbox "Exiting Toolbox." 8 60
+                whiptail --title "Linux Toolbox" --msgbox "Bocian to cwel." 8 60
                 exit 0
                 ;;
             *)
