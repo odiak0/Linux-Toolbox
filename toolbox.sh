@@ -33,10 +33,11 @@ toolbox_menu() {
             "2" "Bspwm desktop setup"
             "3" "Hyprland desktop setup (Arch Linux only)"
             "4" "Grub themes setup"
-            "5" "Reboot"
-            "6" "Exit"
+            "5" "Bash setup"
+            "6" "Reboot"
+            "7" "Exit"
         )
-        choice=$(whiptail --title "Linux Toolbox" --menu "Choose an option:" 16 60 6 "${menu_options[@]}" 3>&1 1>&2 2>&3)
+        choice=$(whiptail --title "Linux Toolbox" --menu "Choose an option:" 16 60 7 "${menu_options[@]}" 3>&1 1>&2 2>&3)
 
         case $choice in
             1)
@@ -90,10 +91,12 @@ toolbox_menu() {
                 bash <(curl -fsSL https://github.com/odiak0/linux-toolbox/raw/main/grub-themes/install.sh)
                 ;;
             5)
-                sudo reboot
+                bash <(curl -fsSL https://github.com/odiak0/mybash/raw/main/install.sh)
                 ;;
             6)
-                whiptail --title "Linux Toolbox" --msgbox "Bocian to cwel." 8 60
+                sudo reboot
+                ;;
+            7)
                 exit 0
                 ;;
             *)
