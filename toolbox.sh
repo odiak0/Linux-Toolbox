@@ -1,18 +1,15 @@
 #!/bin/bash
 
-# Colors for better readability
 GREEN="\e[32m"
 YELLOW="\e[33m"
 ENDCOLOR="\e[0m"
 
-# Function to print colored messages
 print_message() {
     local message="$1"
     local color="$2"
     echo -e "${color}${message}${ENDCOLOR}"
 }
 
-# Function to setup linuxtoolbox
 setup_linuxtoolbox() {
     LINUXTOOLBOXDIR="$HOME/linuxtoolbox"
 
@@ -25,7 +22,6 @@ setup_linuxtoolbox() {
     cd "$LINUXTOOLBOXDIR" || exit
 }
 
-# Function to display the toolbox menu
 toolbox_menu() {
     while true; do
         menu_options=(
@@ -35,13 +31,13 @@ toolbox_menu() {
             "4" "Grub themes setup"
             "5" "Bash setup"
             "6" "Reboot"
-            "7" "Exit"
+            "7" "Purge linuxtoolbox directory"
+            "8" "Exit"
         )
-        choice=$(whiptail --title "Linux Toolbox" --menu "Choose an option:" 16 60 7 "${menu_options[@]}" 3>&1 1>&2 2>&3)
+        choice=$(whiptail --title "Linux Toolbox" --menu "Choose an option:" 16 60 8 "${menu_options[@]}" 3>&1 1>&2 2>&3)
 
         case $choice in
             1)
-                # System Update
                 if command -v apt-get &> /dev/null; then
                     PACKAGER="apt-get"
                 elif command -v dnf &> /dev/null; then
@@ -97,6 +93,11 @@ toolbox_menu() {
                 sudo reboot
                 ;;
             7)
+                rm -rf "$LINUXTOOLBOXDIR"
+                print_message "linuxtoolbox directory has been purged." "$GREEN"
+                exit 0
+                ;;
+            8)
                 exit 0
                 ;;
             *)
@@ -106,12 +107,10 @@ toolbox_menu() {
     done
 }
 
-# Function to check and install whiptail
 check_and_install_whiptail() {
     if ! command -v whiptail &> /dev/null; then
         print_message "whiptail is not installed. Attempting to install..." "$YELLOW"
         
-        # Detect the package manager
         if command -v apt-get &> /dev/null; then
             PACKAGER="apt-get"
         elif command -v dnf &> /dev/null; then
@@ -127,7 +126,6 @@ check_and_install_whiptail() {
             exit 1
         fi
 
-        # Install whiptail based on the detected package manager
         case $PACKAGER in
             apt-get)
                 sudo apt-get update && sudo apt-get install -y whiptail
@@ -155,7 +153,6 @@ check_and_install_whiptail() {
     fi
 }
 
-# Main script
 setup_linuxtoolbox
 check_and_install_whiptail
 toolbox_menu
