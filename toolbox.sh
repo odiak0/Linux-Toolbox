@@ -10,6 +10,20 @@ print_message() {
     echo -e "${color}${message}${ENDCOLOR}"
 }
 
+detect_package_manager() {
+    if command -v apt-get &> /dev/null; then
+        PACKAGER="apt-get"
+    elif command -v dnf &> /dev/null; then
+        PACKAGER="dnf"
+    elif command -v pacman &> /dev/null; then
+        PACKAGER="pacman"
+    elif command -v zypper &> /dev/null; then
+        PACKAGER="zypper"
+    else
+        PACKAGER="unknown"
+    fi
+}
+
 setup_linuxtoolbox() {
     LINUXTOOLBOXDIR="$HOME/linuxtoolbox"
 
@@ -38,19 +52,7 @@ toolbox_menu() {
 
         case $choice in
             1)
-                if command -v apt-get &> /dev/null; then
-                    PACKAGER="apt-get"
-                elif command -v dnf &> /dev/null; then
-                    PACKAGER="dnf"
-                elif command -v yum &> /dev/null; then
-                    PACKAGER="yum"
-                elif command -v pacman &> /dev/null; then
-                    PACKAGER="pacman"
-                elif command -v zypper &> /dev/null; then
-                    PACKAGER="zypper"
-                else
-                    PACKAGER="unknown"
-                fi
+                detect_package_manager
 
                 case $PACKAGER in
                     apt-get)
@@ -58,9 +60,6 @@ toolbox_menu() {
                         ;;
                     dnf)
                         sudo dnf upgrade -y
-                        ;;
-                    yum)
-                        sudo yum update -y
                         ;;
                     pacman)
                         sudo pacman -Syu --noconfirm
@@ -111,18 +110,10 @@ check_and_install_whiptail() {
     if ! command -v whiptail &> /dev/null; then
         print_message "whiptail is not installed. Attempting to install..." "$YELLOW"
         
-        if command -v apt-get &> /dev/null; then
-            PACKAGER="apt-get"
-        elif command -v dnf &> /dev/null; then
-            PACKAGER="dnf"
-        elif command -v yum &> /dev/null; then
-            PACKAGER="yum"
-        elif command -v pacman &> /dev/null; then
-            PACKAGER="pacman"
-        elif command -v zypper &> /dev/null; then
-            PACKAGER="zypper"
-        else
-            whiptail --title "Error" --msgbox "Unable to detect a supported package manager. Please install whiptail manually." 8 60
+        detect_package_manager
+
+        if [ "$PACKAGER" = "unknown" ]; then
+            print_message "Error: Unable to detect a supported package manager. Please install whiptail manually." "$YELLOW"
             exit 1
         fi
 
@@ -131,10 +122,7 @@ check_and_install_whiptail() {
                 sudo apt-get update && sudo apt-get install -y whiptail
                 ;;
             dnf)
-                sudo $PACKAGER install -y newt
-                ;;
-            yum)
-                sudo $PACKAGER install -y newt
+                sudo dnf install -y newt
                 ;;
             pacman)
                 sudo pacman -S --noconfirm libnewt
@@ -147,7 +135,7 @@ check_and_install_whiptail() {
         if command -v whiptail &> /dev/null; then
             print_message "whiptail has been successfully installed." "$GREEN"
         else
-            whiptail --title "Error" --msgbox "whiptail installation failed. Please install it manually." 8 60
+            print_message "Error: whiptail installation failed. Please install it manually." "$YELLOW"
             exit 1
         fi
     fi

@@ -1,18 +1,15 @@
 #!/bin/bash
 
-# Colors for better readability
 GREEN="\e[32m"
 YELLOW="\e[33m"
 ENDCOLOR="\e[0m"
 
-# Function to display colored messages
 print_message() {
     local message="$1"
     local color="$2"
     echo -e "${color}${message}${ENDCOLOR}"
 }
 
-# Function to detect package manager
 detect_package_manager() {
     if command -v apt-get &> /dev/null; then
         PACKAGER_INSTALL="sudo apt-get install -y"
@@ -26,7 +23,6 @@ detect_package_manager() {
     fi
 }
 
-# Function to check and install Git
 check_and_install_git() {
     if ! command -v git &> /dev/null; then
         print_message "Git is not installed. Installing Git..." "$YELLOW"
@@ -42,7 +38,6 @@ check_and_install_git() {
     fi
 }
 
-# Function to setup linuxtoolbox
 setup_linuxtoolbox() {
     check_and_install_git
 
@@ -74,7 +69,6 @@ else
     THEME_DIR="/boot/grub/themes"
 fi
 
-# Function to let user select a theme
 select_theme() {
     THEME_NAME=$(whiptail --title "Select Theme" --menu "Choose theme:" 15 45 5 \
         "Cyberpunk" "" \
@@ -89,13 +83,11 @@ select_theme() {
     print_message "Installing $THEME_NAME" "$GREEN"
 }
 
-# Function to backup current GRUB configuration
 backup() {
     sudo cp -a /etc/default/grub "$LINUXTOOLBOXDIR/linux-toolbox/grub-themes"
     whiptail --title "Backup" --msgbox "GRUB configuration has been backed up to:\n$LINUXTOOLBOXDIR/linux-toolbox/grub-themes/grub" 10 78
 }
 
-# Function to install the selected theme
 install_theme() {
     if [[ ! -d "${THEME_DIR}/${THEME_NAME}" ]]; then
         print_message "Installing ${THEME_NAME}" "$GREEN"
@@ -117,26 +109,19 @@ install_theme() {
     fi
 }
 
-# Function to configure GRUB settings
 config_grub() {
     print_message "Enabling GRUB menu" "$GREEN"
     sudo sed -i '/GRUB_TIMEOUT_STYLE=/d' /etc/default/grub
     echo 'GRUB_TIMEOUT_STYLE=menu' | sudo tee -a /etc/default/grub > /dev/null
 
-    #--------------------------------------------------
-
     print_message "Setting GRUB timeout to 30 seconds" "$GREEN"
     sudo sed -i '/GRUB_TIMEOUT=/d' /etc/default/grub
     echo 'GRUB_TIMEOUT=30' | sudo tee -a /etc/default/grub > /dev/null
-
-    #--------------------------------------------------
 
     print_message "Setting ${THEME_NAME} as default theme" "$GREEN"
     sudo sed -i '/GRUB_THEME=/d' /etc/default/grub
     echo GRUB_THEME=${THEME_DIR}/"${THEME_NAME}"/theme.txt | sudo tee -a /etc/default/grub > /dev/null
     
-    #--------------------------------------------------
-
     print_message "Setting GRUB graphics mode" "$GREEN"
     RESOLUTION=$(whiptail --title "GRUB Graphics Mode" --menu "Choose a resolution:" 15 60 4 \
         "auto" "Automatically detect best resolution" \
@@ -154,7 +139,6 @@ config_grub() {
     print_message "GRUB graphics mode set to $RESOLUTION" "$GREEN"
 }
 
-# Function to update GRUB configuration
 update_grub() {
     print_message "Updating GRUB config..." "$GREEN"
 
@@ -172,18 +156,12 @@ update_grub() {
     fi
 }
 
-# Main function
-main() {
-    detect_package_manager
-    setup_linuxtoolbox
-    select_theme
-    backup
-    install_theme
-    config_grub
-    update_grub
+detect_package_manager
+setup_linuxtoolbox
+select_theme
+backup
+install_theme
+config_grub
+update_grub
 
-    whiptail --title "Success" --msgbox "GRUB Theme Update Successful!" 8 78
-}
-
-# Execute the main function
-main
+whiptail --title "Success" --msgbox "GRUB Theme Update Successful!" 8 78
